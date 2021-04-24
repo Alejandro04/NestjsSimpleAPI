@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm'
+import { Category } from "../../categories/entities/categories.entity";
 
 @Entity()
 export class Task {
@@ -24,4 +25,8 @@ export class Task {
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
+
+  @ManyToMany(() => Category)
+  @JoinTable()
+  categories: Category[];
 }
