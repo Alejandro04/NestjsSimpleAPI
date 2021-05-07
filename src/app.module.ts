@@ -7,11 +7,11 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: 'database-1.cthrokqgzera.us-east-1.rds.amazonaws.com',
       port: 5432,
       username: 'postgres',
       password: 'postgres',
-      database: 'postgres',
+      database: 'database-1',
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: false
     }),

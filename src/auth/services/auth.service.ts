@@ -1,26 +1,27 @@
 import { Injectable } from '@nestjs/common';
+import { UsersService } from '../../user/services/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { Observable, from } from 'rxjs';
-import { User } from '../../user/models/user.interface';
-const bcrypt = require('bcrypt')
-
 
 @Injectable()
 export class AuthService {
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  constructor(private readonly jwtService: JwtService) { }
-
-  generateJWT(user: User): Observable<string> {
-    return from(this.jwtService.signAsync({ user }));
+  async validateUser(username: string, pass: string): Promise<any> {
+    const user = await this.usersService.findOne(username);
+    if (user && user.password === pass) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
   }
 
-  hashPassword(password: string): Observable<string> {
-    return from<string>(bcrypt.hash(password, 12));
-
+  async login(user: any) {
+    const payload = { username: user.username, sub: user.userId };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
-
-  comparePasswords(newPassword: string, passwortHash: string): Observable<any> {
-    return from(bcrypt.compare(newPassword, passwortHash));
-  }
-
 }
