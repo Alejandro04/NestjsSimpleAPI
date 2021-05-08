@@ -28,5 +28,7 @@ export class UserService {
 
   async findOne(username: string): Promise<User | undefined> {
     return this.users.find(user => user.username === username);
+    // AQUI HAGO LA CONSULTA A LA BASE DE DATOS
   }
+
 }
