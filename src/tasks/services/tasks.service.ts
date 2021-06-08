@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Task } from '../entities/tasks.entity';
+import { TasksInterface } from '../entities/tasks.interface';
 
 @Injectable()
 export class TasksService {
@@ -9,30 +10,36 @@ export class TasksService {
   constructor(@InjectRepository(Task) private taskRepo: Repository<Task>
   ) { }
 
-  findAll() {
-    return this.taskRepo.find();
+  public async findAll() {
+    try {
+      return await this.taskRepo.find({ relations: ['category'] });
+    } catch (error) {
+      return error;
+    }
   }
 
-  findOne(id: number) {
-    return this.taskRepo.findOne(id);
+  public async create(task: TasksInterface) {
+    try {
+      return await this.taskRepo.save(task);
+    } catch (error) {
+      return error;
+    }
   }
 
-  create(body: any) {
-    const newTask = this.taskRepo.create({
-      name: body.name,
-      description: body.description
-    });
-    return this.taskRepo.save(newTask);
+  public async update(id: number, task: TasksInterface) {
+    try {
+      await this.taskRepo.update(id, task)
+      const taskUpdated = this.taskRepo.findOne(id)
+      return taskUpdated;
+    } catch (error) {
+      return error;
+    }
   }
-
-  async update(id: number, body: any) {
-    const task = await this.taskRepo.findOne(id);
-    this.taskRepo.merge(task, body);
-    return this.taskRepo.save(task);
-  }
-
-  async delete(id: number) {
-    await this.taskRepo.delete(id);
-    return true;
+  public async remove(id: number) {
+    try {
+      return await this.taskRepo.delete(id);
+    } catch (error) {
+      return error;
+    }
   }
 }
