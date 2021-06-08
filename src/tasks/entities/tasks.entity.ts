@@ -26,6 +26,10 @@ export class Task {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
+  /*FK: Creo la columna primero y luego aplico la relacion*/
+  @Column()
+  categoryId: string;
+
   @ManyToOne(() => Category, category => category.tasks)
   category: Category;
 }
